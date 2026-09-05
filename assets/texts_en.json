@@ -1,0 +1,182 @@
+{
+  "meta": {
+    "lang": "en",
+    "title": "PID-5 Norms",
+    "subtitle": "Scoring with population-representative norms",
+    "other_lang_label": "Deutsche Version",
+    "html_lang": "en"
+  },
+  "common": {
+    "next": "Continue",
+    "reset_link": "Delete results and start a new scoring session",
+    "print_link": "Print this page",
+    "footer_contact": "For questions or comments, please contact the <a href=\"{contact_url}\">project team</a> by <a href=\"mailto:{contact_email}\">email</a>.",
+    "footer_copyright": "University of Kassel and Freie Universität Berlin, {year}",
+    "response_options": {
+      "1": "Very false or often false",
+      "2": "Sometimes or somewhat false",
+      "3": "Sometimes or somewhat true",
+      "4": "Very true or often true"
+    }
+  },
+  "intro": {
+    "heading": "Welcome",
+    "text": "<p>This tool scores the <i>Personality Inventory for DSM-5</i> (PID-5) and its abbreviated versions and references the scores to norms for the German general population. The norms come from Zimmermann, Kerber, Kemper, and Rek (2026). They rest on a probability-based reference sample from the GESIS Panel (<i>N</i> = 4,727) and three donor samples that completed the full PID-5 (<i>N</i> = 2,471), combined through a modular Bayesian norming pipeline.</p><p><b>What you get:</b></p><ul><li>percentile-based T scores for all facets and domains of the selected instrument, referenced either to the general adult population or to people of the same gender and age group,</li><li>for every T score a 95% credible interval for the person's true T score that combines the measurement imprecision of the instrument with the uncertainty of the norms,</li><li>a table and a graphical display of the profile.</li></ul><p><b>What you can enter:</b> either the responses to all items of the questionnaire or the precomputed <b>sum scores</b> of the facets (for the PID-5-BF and the PID5BF+M: of the domains).</p><p><b>Privacy:</b> The entered values are used only to compute the results. They are not stored permanently and not passed on to third parties. Do not enter names or other identifying information.</p><p><b>Note:</b> The results do not replace clinical judgment. Please read the interpretation notes on the results page.</p>",
+    "credits": "<p style=\"font-size:90%; color:#555;\">Norms and methods: Zimmermann, J., Kerber, A., Kemper, C. J., &amp; Rek, K. (2026). <i>Getting the Personality Inventory for DSM-5 ready for clinical practice: Population-representative norms that embrace uncertainty</i>. Manuscript submitted for publication. Norm tables, supplement, and analysis code: <a href=\"https://doi.org/10.5281/zenodo.22280403\">https://doi.org/10.5281/zenodo.22280403</a>, <a href=\"https://osf.io/hwxnj\">https://osf.io/hwxnj</a>.<br>Platform: Nico Belobrajdic and Moritz Ehrnstraßer (implementation), <a href=\"https://www.uni-kassel.de/fb01/institute/institut-fuer-psychologie/fachgebiete/differentielle-psychologie/prof-dr-johannes-zimmermann\">Prof. Dr. Johannes Zimmermann</a> and <a href=\"https://www.ewi-psy.fu-berlin.de/einrichtungen/arbeitsbereiche/klinisch_psychologische_intervention/mitarbeiter/akerber/index.html\">Dr. André Kerber</a> (project leads).</p>",
+    "settings_heading": "Settings",
+    "instrument_label": "Which instrument was used?",
+    "instrument_choices": {
+      "1": "PID-5 (220 items)",
+      "2": "PID-5-SF (100 items)",
+      "3": "PID5BF+M (36 items)",
+      "4": "PID-5-BF (25 items)"
+    },
+    "mode_label": "How would you like to enter the data?",
+    "mode_choices": {
+      "1": "Enter sum scores of the scales",
+      "2": "Answer all items (complete the questionnaire)"
+    },
+    "frame_label": "Which reference group should the norms refer to?",
+    "frame_choices": {
+      "overall": "General population (adults aged 18 and older)",
+      "cell": "People of the same gender and age group (18 to 34, 35 to 49, 50 to 64, 65 and older)",
+      "age": "People of the same gender and the same age in years (continuous-age norms)"
+    },
+    "frame_help": "Both reference groups are psychometrically equivalent. General population norms answer the question of how unusual a score is among adults overall. Gender- and age-specific norms answer the question of how unusual it is compared with people of the same gender and age. Please state in reports which reference group was used.",
+    "age_label": "Age of the person in years",
+    "gender_label": "Gender of the person",
+    "gender_choices": {
+      "m": "male",
+      "f": "female",
+      "d": "diverse or not specified"
+    },
+    "gender_help": "No separate norms are available for people of diverse gender. In this case the general population norms are used."
+  },
+  "scores": {
+    "heading": "Entering sum scores",
+    "instruction": "<p>For each scale, please enter the <b>sum score</b> of the answered items and the number of items that were <b>not answered</b>. If all items were answered, leave the second field at 0.</p><p>Please also indicate how the responses were coded: from 0 to 3 (standard coding of the PID-5) or from 1 to 4. With 0 to 3 coding, reverse-keyed items must already be reversed.</p>",
+    "coding_label": "The responses are coded from",
+    "coding_choices": {
+      "0": "0 to 3",
+      "1": "1 to 4"
+    },
+    "sum_label": "Sum score",
+    "missing_label": "Items not answered",
+    "error_too_many_missing": "This scale has only {n} items. Please check the number of unanswered items.",
+    "error_sum_too_high": "The sum score is higher than possible with the stated number of answered items and the selected coding. Please check the sum score, the coding, and the number of unanswered items.",
+    "items_suffix": "items"
+  },
+  "items": {
+    "heading": "Questionnaire",
+    "instruction": "This is a list of things different people might say about themselves. We are interested in how you would describe yourself. There are no right or wrong answers, so you can describe yourself as honestly as possible. Take your time and read each statement carefully, selecting the response that best describes you.",
+    "clinician_note": "<p style=\"font-size:90%; color:#555;\">Note for practitioners: The questionnaire can be completed on screen by the person or transferred by you from a paper form. Unanswered items can be skipped.</p>"
+  },
+  "results": {
+    "heading": "Results",
+    "instrument_line": "Instrument: <b>{instrument}</b>. Input: {mode}.",
+    "mode_items": "item responses",
+    "mode_scores": "sum scores",
+    "frame_line": "Reference group of the norms: <b>{frame}</b>.",
+    "frame_overall": "General population (adults aged 18 and older)",
+    "frame_cell": "{gender}, {age_group}",
+    "frame_age": "{gender}, {age} years (continuous-age norms)",
+    "frame_fallback_gender": "General population norms were used because no separate norms are available for the specified gender.",
+    "frame_fallback_age": "General population norms were used because no valid age was entered.",
+    "gender_labels": {
+      "m": "Men",
+      "f": "Women"
+    },
+    "age_group_labels": {
+      "[18,35)": "18 to 34 years",
+      "[35,50)": "35 to 49 years",
+      "[50,65)": "50 to 64 years",
+      "[65,Inf)": "65 years and older"
+    },
+    "how_to_read_heading": "Notes on interpretation",
+    "how_to_read": "<p>The <b>T score</b> indicates how common the observed raw score is in the reference group. It is percentile based: T = 50 corresponds to the median, T = 60 to about the 84th percentile, T = 65 to about the 93rd percentile, and T = 70 to about the 98th percentile. Identical T scores mean identical rarity in the population on every scale.</p><p>The <b>95% credible interval (CI)</b> gives the range within which the person's true T score lies with 95% probability. It accounts for the measurement imprecision of the instrument and the uncertainty of the norm values. Intervals are considerably wider for short instruments than for long ones. A point value of T = 70 on a brief form can be compatible with mildly, moderately, and severely elevated trait levels. Always judge the interval, not just the point value. For very high or very low raw scores, the T score can fall outside its own interval. This is not an error: the T score gives the percentile of the observed raw score, whereas the interval is centered on the estimate of the true score, which is pulled toward the population mean. Extreme observed scores partly reflect measurement error, and the interval shows how much less extreme the true score is expected to be.</p><p>The lines at T = 60, 65, and 70 mark the conventional anchors for mildly, moderately, and severely elevated levels. Differences between scales should be interpreted only if the intervals do not overlap. For the brief forms this is rarely the case.</p>",
+    "table_domains_heading": "Domains",
+    "table_facets_heading": "Facets",
+    "col_scale": "Scale",
+    "col_items": "Items",
+    "col_sum": "Sum",
+    "col_mean": "Mean",
+    "col_T": "T score",
+    "col_ci": "95% CI",
+    "col_pctl": "Percentile",
+    "col_note": "Note",
+    "note_missing": "Fewer than 80% of items answered",
+    "note_none": "No items answered",
+    "note_extrapolated": "Raw score outside the range observed in the reference sample, norm value extrapolated",
+    "flag_missing": "a",
+    "flag_extrapolated": "b",
+    "footnote_missing": "<sup>a</sup> Fewer than 80% of the items of this scale were answered. The mean of the answered items was used. Please interpret this value with caution.",
+    "footnote_extrapolated": "<sup>b</sup> The raw score lies outside the range observed in the reference sample. The norm value is an extrapolation of the models and correspondingly uncertain.",
+    "footnote_facets_primary": "Facets in bold form the respective domain (mean of these three facets). The remaining facets are assigned to the domain following DSM-5 but do not enter the domain score.",
+    "footnote_pctl": "Percentile: share of the reference group with a raw score lower than or equal to the observed one (median of the norm estimate).",
+    "footnote_bfm": "The PID5BF+M is intended for scoring at the domain level. Facet scores are therefore not reported.",
+    "fig_domains_heading": "Domain profile",
+    "fig_facets_heading": "Facet profile",
+    "fig_caption_domains": "Points: T scores. Bars: 95% credible intervals for the true T score. Open points: fewer than 80% of items answered. Dashed line: median of the reference group (T = 50). Shaded regions from T = 60, 65, and 70: mildly, moderately, and severely elevated. Diamond to the right of the dotted line: total score.",
+    "fig_caption_facets": "Points: T scores. Bars: 95% credible intervals for the true T score. Circles: facets that form the domain score. Squares: further facets of the domain according to DSM-5. Open symbols: fewer than 80% of items answered. Dashed line: median of the reference group (T = 50). Shaded regions from T = 60, 65, and 70: mildly, moderately, and severely elevated.",
+    "severity_labels": {
+      "mild": "mildly elevated",
+      "moderate": "moderately elevated",
+      "severe": "severely elevated"
+    },
+    "axis_T": "T score",
+    "high_items_heading": "Items with the highest endorsement",
+    "high_items_text": "The following items were answered at the highest level in the maladaptive direction (for reverse-keyed items: with the strongest disagreement). They may serve as a starting point for the clinical interview.",
+    "high_items_none": "No item was answered with the highest response category.",
+    "col_item_no": "No.",
+    "col_item_text": "Item",
+    "col_item_facet": "Facet",
+    "no_results": "No input is available. Please restart the scoring session.",
+    "load_error": "The norm tables could not be loaded. Please try again later or contact the project team.",
+    "reversed_marker": "reverse-keyed"
+  },
+  "instruments": {
+    "full": "PID-5 (220 items)",
+    "sf": "PID-5-SF (100 items)",
+    "bfplus_m": "PID5BF+M (36 items)",
+    "bf": "PID-5-BF (25 items)"
+  },
+  "domains": {
+    "negative_affectivity": "Negative Affectivity",
+    "detachment": "Detachment",
+    "antagonism": "Antagonism",
+    "disinhibition": "Disinhibition",
+    "psychoticism": "Psychoticism",
+    "anankastia": "Anankastia"
+  },
+  "facets": {
+    "anhedonia": "Anhedonia",
+    "anxiousness": "Anxiousness",
+    "attention_seek": "Attention Seeking",
+    "callousness": "Callousness",
+    "deceitfulness": "Deceitfulness",
+    "depressivity": "Depressivity",
+    "distractibility": "Distractibility",
+    "eccentricity": "Eccentricity",
+    "emo_lability": "Emotional Lability",
+    "grandiosity": "Grandiosity",
+    "hostility": "Hostility",
+    "impulsivity": "Impulsivity",
+    "intimacy_avoid": "Intimacy Avoidance",
+    "irresponsibility": "Irresponsibility",
+    "manipulativeness": "Manipulativeness",
+    "percept_dysreg": "Perceptual Dysregulation",
+    "perseveration": "Perseveration",
+    "restricted_aff": "Restricted Affectivity",
+    "rigid_perfect": "Rigid Perfectionism",
+    "risk_taking": "Risk Taking",
+    "separation_insec": "Separation Insecurity",
+    "submissiveness": "Submissiveness",
+    "suspiciousness": "Suspiciousness",
+    "unusual_beliefs": "Unusual Beliefs and Experiences",
+    "withdrawal": "Withdrawal"
+  },
+  "total": {
+    "label": "Total score",
+    "footnote": "Total score: mean of all items of the five DSM-5 domains (Anankastia is not included). It serves as a proxy for the general severity of personality pathology (Zimmermann et al., 2020), not as a measure of Criterion A. As a mean across many items it is the most precise value of the instrument and has the narrowest interval."
+  }
+}

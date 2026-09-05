@@ -1,0 +1,50 @@
+{{HEADER_HTML}}
+
+```{r pf_setup, echo=FALSE, results="asis", message=FALSE, warning=FALSE}
+PF_BASE    <- "{{BASE_URL}}"
+PF_LANG    <- "{{LANG}}"
+PF_VERSION <- "{{VERSION}}"
+pf_loaded <- tryCatch({
+  source(paste0(PF_BASE, "pid5_platform.R"), encoding = "UTF-8", local = FALSE)
+  TRUE
+}, error = function(e) FALSE)
+if (!pf_loaded) {
+  cat('<div style="background:#fff6d6; border-left:4px solid #e0b400; padding:8px 12px;">{{LOAD_ERROR}}</div>')
+} else {
+  pf_get <- function(nm) if (exists(nm)) get(nm) else NULL
+  pf <- pf_run(version = PF_VERSION, lang = PF_LANG, base_url = PF_BASE,
+               intro  = pf_get("{{INTRO_SURVEY}}"),
+               items  = pf_get("{{ITEMS_SURVEY}}"),
+               scores = pf_get("{{SCORES_SURVEY}}"))
+  pf_render_summary(pf)
+  pf_render_tables(pf)
+}
+```
+
+```{r pf_domains, echo=FALSE, results="asis", message=FALSE, warning=FALSE, fig.width=10, fig.height=5.5}
+if (pf_loaded && isTRUE(pf$ok)) {
+  cat("<h3>", pf$texts$results$fig_domains_heading, "</h3>\n", sep = "")
+  print(pf_plot_domains(pf))
+  cat('<p class="pf-small">', pf$texts$results$fig_caption_domains, "</p>\n")
+}
+```
+
+```{r pf_facets, echo=FALSE, results="asis", message=FALSE, warning=FALSE, fig.width=10, fig.height={{FACET_FIG_HEIGHT}}}
+if (pf_loaded && isTRUE(pf$ok) && !is.null(pf$facets)) {
+  cat("<h3>", pf$texts$results$fig_facets_heading, "</h3>\n", sep = "")
+  print(pf_plot_facets(pf))
+  cat('<p class="pf-small">', pf$texts$results$fig_caption_facets, "</p>\n")
+}
+```
+
+```{r pf_notes, echo=FALSE, results="asis", message=FALSE, warning=FALSE}
+if (pf_loaded) {
+  pf_render_notes(pf)
+  pf_render_high_items(pf)
+}
+```
+
+<div style="text-align:center; margin-top:24px;">
+<a class="btn btn-primary" href="{{RESET_URL}}">{{RESET_LABEL}}</a>
+<a class="btn btn-default" href="javascript:window.print();">{{PRINT_LABEL}}</a>
+</div>

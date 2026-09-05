@@ -1,0 +1,182 @@
+{
+  "meta": {
+    "lang": "de",
+    "title": "PID-5 Normwerte",
+    "subtitle": "Auswertung mit bevölkerungsrepräsentativen Normen",
+    "other_lang_label": "English version",
+    "html_lang": "de"
+  },
+  "common": {
+    "next": "Weiter",
+    "reset_link": "Ergebnisse löschen und neue Auswertung starten",
+    "print_link": "Diese Seite drucken",
+    "footer_contact": "Bei Fragen oder Anmerkungen wenden Sie sich bitte per <a href=\"mailto:{contact_email}\">E-Mail</a> an die <a href=\"{contact_url}\">Projektverantwortlichen</a>.",
+    "footer_copyright": "Universität Kassel und Freie Universität Berlin, {year}",
+    "response_options": {
+      "1": "Trifft überhaupt nicht zu",
+      "2": "Trifft eher nicht zu",
+      "3": "Trifft eher zu",
+      "4": "Trifft genau zu"
+    }
+  },
+  "intro": {
+    "heading": "Willkommen",
+    "text": "<p>Dieses Werkzeug wertet Ergebnisse des <i>Personality Inventory for DSM-5</i> (PID-5) und seiner Kurzformen aus und setzt sie in Beziehung zu Normwerten der deutschen Allgemeinbevölkerung. Die Normen stammen aus Zimmermann, Kerber, Kemper und Rek (2026). Sie beruhen auf einer probabilistischen Referenzstichprobe des GESIS Panels (<i>N</i> = 4.727) und drei Ergänzungsstichproben, die den vollständigen PID-5 ausgefüllt haben (<i>N</i> = 2.471), zusammengeführt über eine modulare Bayesianische Schätzpipeline.</p><p><b>Was Sie erhalten:</b></p><ul><li>perzentilbasierte T-Werte für alle Facetten und Domänen des gewählten Instruments, wahlweise bezogen auf die Gesamtbevölkerung oder auf Personen gleichen Geschlechts und Alters,</li><li>zu jedem T-Wert ein 95%-Kredibilitätsintervall für den wahren T-Wert der Person, das die Messungenauigkeit des Instruments und die Unsicherheit der Normen zusammenfasst,</li><li>eine tabellarische und grafische Darstellung des Profils.</li></ul><p><b>Was Sie eingeben können:</b> entweder die Antworten auf alle Items des Fragebogens oder die bereits berechneten <b>Summenwerte</b> der Facetten (bei PID-5-BF und PID5BF+M: der Domänen).</p><p><b>Datenschutz:</b> Die eingegebenen Werte werden ausschließlich zur Berechnung der Ergebnisse verwendet, nicht dauerhaft gespeichert und nicht an Dritte weitergegeben. Geben Sie keine Namen oder andere identifizierende Angaben ein.</p><p><b>Hinweis:</b> Die Ergebnisse ersetzen keine klinische Beurteilung. Bitte beachten Sie die Interpretationshinweise auf der Ergebnisseite.</p>",
+    "credits": "<p style=\"font-size:90%; color:#555;\">Normen und Methodik: Zimmermann, J., Kerber, A., Kemper, C. J., &amp; Rek, K. (2026). <i>Getting the Personality Inventory for DSM-5 ready for clinical practice: Population-representative norms that embrace uncertainty</i>. Manuskript eingereicht. Normtabellen, Supplement und Analysecode: <a href=\"https://doi.org/10.5281/zenodo.22280403\">https://doi.org/10.5281/zenodo.22280403</a>, <a href=\"https://osf.io/hwxnj\">https://osf.io/hwxnj</a>.<br>Plattform: Nico Belobrajdic und Moritz Ehrnstraßer (Umsetzung), <a href=\"https://www.uni-kassel.de/fb01/institute/institut-fuer-psychologie/fachgebiete/differentielle-psychologie/prof-dr-johannes-zimmermann\">Prof. Dr. Johannes Zimmermann</a> und <a href=\"https://www.ewi-psy.fu-berlin.de/einrichtungen/arbeitsbereiche/klinisch_psychologische_intervention/mitarbeiter/akerber/index.html\">Dr. André Kerber</a> (Projektverantwortung).</p>",
+    "settings_heading": "Einstellungen",
+    "instrument_label": "Welches Instrument wurde verwendet?",
+    "instrument_choices": {
+      "1": "PID-5 (220 Items)",
+      "2": "PID-5-SF (100 Items)",
+      "3": "PID5BF+M (36 Items)",
+      "4": "PID-5-BF (25 Items)"
+    },
+    "mode_label": "Wie möchten Sie die Daten eingeben?",
+    "mode_choices": {
+      "1": "Summenwerte der Skalen eingeben",
+      "2": "Alle Items beantworten (Fragebogen ausfüllen)"
+    },
+    "frame_label": "Auf welche Bezugsgruppe sollen sich die Normwerte beziehen?",
+    "frame_choices": {
+      "overall": "Gesamtbevölkerung (Erwachsene ab 18 Jahren)",
+      "cell": "Personen gleichen Geschlechts und gleicher Altersgruppe (18 bis 34, 35 bis 49, 50 bis 64, 65 und älter)",
+      "age": "Personen gleichen Geschlechts und gleichen Alters in Jahren (altersgenaue Normen)"
+    },
+    "frame_help": "Beide Bezugsgruppen sind psychometrisch gleichwertig. Gesamtbevölkerungsnormen beantworten die Frage, wie ungewöhnlich ein Wert unter Erwachsenen insgesamt ist. Geschlechts- und altersspezifische Normen beantworten die Frage, wie ungewöhnlich er im Vergleich zu Personen gleichen Geschlechts und Alters ist. Bitte geben Sie in Berichten an, welche Bezugsgruppe verwendet wurde.",
+    "age_label": "Alter der Person in Jahren",
+    "gender_label": "Geschlecht der Person",
+    "gender_choices": {
+      "m": "männlich",
+      "f": "weiblich",
+      "d": "divers oder keine Angabe"
+    },
+    "gender_help": "Für Personen mit diversem Geschlecht liegen keine eigenen Normen vor. In diesem Fall werden die Normen der Gesamtbevölkerung verwendet."
+  },
+  "scores": {
+    "heading": "Eingabe der Summenwerte",
+    "instruction": "<p>Bitte geben Sie für jede Skala den <b>Summenwert</b> der beantworteten Items ein sowie die Anzahl der Items, die <b>nicht beantwortet</b> wurden. Wurden alle Items beantwortet, lassen Sie das zweite Feld bei 0.</p><p>Bitte geben Sie zusätzlich an, wie die Antworten kodiert wurden: von 0 bis 3 (Standardkodierung des PID-5) oder von 1 bis 4. Bei der Kodierung 0 bis 3 müssen umgepolte Items bereits umgepolt sein.</p>",
+    "coding_label": "Die Antworten sind kodiert von",
+    "coding_choices": {
+      "0": "0 bis 3",
+      "1": "1 bis 4"
+    },
+    "sum_label": "Summenwert",
+    "missing_label": "Nicht beantwortete Items",
+    "error_too_many_missing": "Diese Skala hat nur {n} Items. Bitte prüfen Sie die Anzahl der nicht beantworteten Items.",
+    "error_sum_too_high": "Der Summenwert ist höher als bei der angegebenen Anzahl beantworteter Items und der gewählten Kodierung möglich. Bitte prüfen Sie Summenwert, Kodierung und Anzahl der nicht beantworteten Items.",
+    "items_suffix": "Items"
+  },
+  "items": {
+    "heading": "Fragebogen",
+    "instruction": "Im Folgenden finden Sie eine Liste von Aussagen, mit denen sich Menschen beschreiben können. Wir interessieren uns dafür, wie Sie sich selbst beschreiben würden. Es gibt keine richtigen oder falschen Antworten. Bitte beschreiben Sie sich so ehrlich wie möglich. Nehmen Sie sich etwas Zeit, lesen Sie jede Aussage sorgfältig durch und wählen Sie jeweils diejenige Antwort, die Sie am besten beschreibt.",
+    "clinician_note": "<p style=\"font-size:90%; color:#555;\">Hinweis für Anwenderinnen und Anwender: Der Fragebogen kann von der Person selbst am Bildschirm ausgefüllt oder von Ihnen aus einem Papierbogen übertragen werden. Nicht beantwortete Items können übersprungen werden.</p>"
+  },
+  "results": {
+    "heading": "Ergebnisse",
+    "instrument_line": "Instrument: <b>{instrument}</b>. Eingabe: {mode}.",
+    "mode_items": "Itemantworten",
+    "mode_scores": "Summenwerte",
+    "frame_line": "Bezugsgruppe der Normwerte: <b>{frame}</b>.",
+    "frame_overall": "Gesamtbevölkerung (Erwachsene ab 18 Jahren)",
+    "frame_cell": "{gender}, {age_group}",
+    "frame_age": "{gender}, {age} Jahre (altersgenaue Normen)",
+    "frame_fallback_gender": "Es wurden die Normen der Gesamtbevölkerung verwendet, weil für das angegebene Geschlecht keine eigenen Normen vorliegen.",
+    "frame_fallback_age": "Es wurden die Normen der Gesamtbevölkerung verwendet, weil kein gültiges Alter angegeben wurde.",
+    "gender_labels": {
+      "m": "Männer",
+      "f": "Frauen"
+    },
+    "age_group_labels": {
+      "[18,35)": "18 bis 34 Jahre",
+      "[35,50)": "35 bis 49 Jahre",
+      "[50,65)": "50 bis 64 Jahre",
+      "[65,Inf)": "65 Jahre und älter"
+    },
+    "how_to_read_heading": "Hinweise zur Interpretation",
+    "how_to_read": "<p>Der <b>T-Wert</b> gibt an, wie häufig der beobachtete Rohwert in der Bezugsgruppe ist. Er ist perzentilbasiert: T = 50 entspricht dem Median, T = 60 etwa dem 84. Perzentil, T = 65 etwa dem 93. Perzentil und T = 70 etwa dem 98. Perzentil. Gleiche T-Werte bedeuten auf allen Skalen die gleiche Seltenheit in der Bevölkerung.</p><p>Das <b>95%-Kredibilitätsintervall (KI)</b> gibt den Bereich an, in dem der wahre T-Wert der Person mit 95 % Wahrscheinlichkeit liegt. Es berücksichtigt die Messungenauigkeit des Instruments und die Unsicherheit der Normwerte. Die Intervalle sind bei kurzen Instrumenten deutlich breiter als bei langen. Ein Punktwert von T = 70 auf einer Kurzform kann mit leicht, mäßig und stark erhöhten Merkmalsausprägungen vereinbar sein. Beurteilen Sie daher stets das Intervall, nicht nur den Punktwert. Bei sehr hohen oder sehr niedrigen Rohwerten kann der T-Wert außerhalb seines eigenen Intervalls liegen. Das ist kein Fehler: Der T-Wert gibt das Perzentil des beobachteten Rohwerts an, das Intervall ist dagegen auf die zur Bevölkerungsmitte hin korrigierte Schätzung des wahren Werts zentriert. Extreme beobachtete Werte enthalten anteilig Messfehler, und das Intervall zeigt, um wie viel weniger extrem der wahre Wert erwartungsgemäß ist.</p><p>Die Linien bei T = 60, 65 und 70 markieren die üblichen Orientierungswerte für leicht, mäßig und stark erhöhte Ausprägungen. Unterschiede zwischen Skalen sollten nur dann interpretiert werden, wenn sich die Intervalle nicht überschneiden. Bei den Kurzformen ist das selten der Fall.</p>",
+    "table_domains_heading": "Domänen",
+    "table_facets_heading": "Facetten",
+    "col_scale": "Skala",
+    "col_items": "Items",
+    "col_sum": "Summe",
+    "col_mean": "Mittelwert",
+    "col_T": "T-Wert",
+    "col_ci": "95%-KI",
+    "col_pctl": "Perzentil",
+    "col_note": "Hinweis",
+    "note_missing": "Weniger als 80 % der Items beantwortet",
+    "note_none": "Keine Items beantwortet",
+    "note_extrapolated": "Rohwert außerhalb des in der Referenzstichprobe beobachteten Bereichs, Normwert extrapoliert",
+    "flag_missing": "a",
+    "flag_extrapolated": "b",
+    "footnote_missing": "<sup>a</sup> Für diese Skala wurden weniger als 80 % der Items beantwortet. Der Mittelwert der beantworteten Items wurde verwendet. Bitte interpretieren Sie den Wert mit Vorsicht.",
+    "footnote_extrapolated": "<sup>b</sup> Der Rohwert liegt außerhalb des Bereichs, der in der Referenzstichprobe beobachtet wurde. Der Normwert ist eine Extrapolation der Modelle und entsprechend unsicher.",
+    "footnote_facets_primary": "Fettgedruckte Facetten bilden die jeweilige Domäne (Mittelwert dieser drei Facetten). Die übrigen Facetten sind der Domäne nach dem DSM-5 zugeordnet, gehen aber nicht in den Domänenwert ein.",
+    "footnote_pctl": "Perzentil: Anteil der Bezugsgruppe mit einem niedrigeren oder gleichen Rohwert (Median der Normschätzung).",
+    "footnote_bfm": "Der PID5BF+M ist für die Auswertung auf Domänenebene vorgesehen. Facettenwerte werden daher nicht berichtet.",
+    "fig_domains_heading": "Profil der Domänen",
+    "fig_facets_heading": "Profil der Facetten",
+    "fig_caption_domains": "Punkte: T-Werte. Balken: 95%-Kredibilitätsintervalle für den wahren T-Wert. Offene Punkte: weniger als 80 % der Items beantwortet. Gestrichelte Linie: Median der Bezugsgruppe (T = 50). Schattierte Bereiche ab T = 60, 65 und 70: leicht, mäßig und stark erhöht. Raute rechts der gepunkteten Linie: Gesamtwert.",
+    "fig_caption_facets": "Punkte: T-Werte. Balken: 95%-Kredibilitätsintervalle für den wahren T-Wert. Kreise: Facetten, die den Domänenwert bilden. Quadrate: weitere Facetten der Domäne nach DSM-5. Offene Symbole: weniger als 80 % der Items beantwortet. Gestrichelte Linie: Median der Bezugsgruppe (T = 50). Schattierte Bereiche ab T = 60, 65 und 70: leicht, mäßig und stark erhöht.",
+    "severity_labels": {
+      "mild": "leicht erhöht",
+      "moderate": "mäßig erhöht",
+      "severe": "stark erhöht"
+    },
+    "axis_T": "T-Wert",
+    "high_items_heading": "Items mit der höchsten Zustimmung",
+    "high_items_text": "Die folgenden Items wurden in maladaptiver Richtung mit der höchsten Ausprägung beantwortet (bei umgepolten Items: mit der stärksten Ablehnung). Sie können als Ausgangspunkt für das klinische Gespräch dienen.",
+    "high_items_none": "Kein Item wurde mit der höchsten Antwortkategorie beantwortet.",
+    "col_item_no": "Nr.",
+    "col_item_text": "Item",
+    "col_item_facet": "Facette",
+    "no_results": "Es liegen keine Eingaben vor. Bitte starten Sie die Auswertung neu.",
+    "load_error": "Die Normtabellen konnten nicht geladen werden. Bitte versuchen Sie es später erneut oder wenden Sie sich an die Projektverantwortlichen.",
+    "reversed_marker": "umgepolt"
+  },
+  "instruments": {
+    "full": "PID-5 (220 Items)",
+    "sf": "PID-5-SF (100 Items)",
+    "bfplus_m": "PID5BF+M (36 Items)",
+    "bf": "PID-5-BF (25 Items)"
+  },
+  "domains": {
+    "negative_affectivity": "Negative Affektivität",
+    "detachment": "Verschlossenheit",
+    "antagonism": "Antagonismus",
+    "disinhibition": "Enthemmtheit",
+    "psychoticism": "Psychotizismus",
+    "anankastia": "Anankasmus"
+  },
+  "facets": {
+    "anhedonia": "Anhedonie",
+    "anxiousness": "Ängstlichkeit",
+    "attention_seek": "Suche nach Aufmerksamkeit",
+    "callousness": "Gefühlskälte",
+    "deceitfulness": "Unehrlichkeit",
+    "depressivity": "Depressivität",
+    "distractibility": "Ablenkbarkeit",
+    "eccentricity": "Exzentrizität",
+    "emo_lability": "Emotionale Labilität",
+    "grandiosity": "Grandiosität",
+    "hostility": "Feindseligkeit",
+    "impulsivity": "Impulsivität",
+    "intimacy_avoid": "Vermeidung von Nähe",
+    "irresponsibility": "Verantwortungslosigkeit",
+    "manipulativeness": "Neigung zur Manipulation",
+    "percept_dysreg": "Denk- und Wahrnehmungsstörungen",
+    "perseveration": "Perseveration",
+    "restricted_aff": "Affektarmut",
+    "rigid_perfect": "Rigider Perfektionismus",
+    "risk_taking": "Neigung zu riskantem Verhalten",
+    "separation_insec": "Trennungsangst",
+    "submissiveness": "Unterwürfigkeit",
+    "suspiciousness": "Misstrauen",
+    "unusual_beliefs": "Ungewöhnliche Überzeugungen und Erfahrungen",
+    "withdrawal": "Sozialer Rückzug"
+  },
+  "total": {
+    "label": "Gesamtwert",
+    "footnote": "Gesamtwert: Mittelwert aller Items der fünf DSM-5-Domänen (Anankasmus geht nicht ein). Er dient als Näherungsmaß für den allgemeinen Schweregrad der Persönlichkeitspathologie (Zimmermann et al., 2020), nicht als Maß für Kriterium A. Als Mittelwert über viele Items ist er der präziseste Wert des Instruments und hat das schmalste Intervall."
+  }
+}
