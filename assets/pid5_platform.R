@@ -33,7 +33,7 @@
 #   extrap     raw score outside the range observed in the reference sample
 # =============================================================================
 
-pf_version_tag <- "2026-09-05"
+pf_version_tag <- "2026-09-06"
 
 # UTF-8 output (umlauts in cat()) also on hosts with a non-UTF-8 default locale
 if (!isTRUE(l10n_info()[["UTF-8"]])) {
@@ -653,29 +653,40 @@ pf_render_diagnostics <- function(pf, names = c(intro = "", items = "", scores =
   if (!isTRUE(pf$ok)) return(invisible())
   all_na <- all(is.na(pf$domains$T)) && all(is.na(pf$total$T))
   if (!all_na && !force) return(invisible())
-  env_objs <- tryCatch({
-    e <- parent.frame(); out <- character(0)
-    while (!identical(e, emptyenv())) {
-      nms <- ls(e); if (length(nms)) out <- c(out, nms[vapply(nms, function(n) is.data.frame(get(n, envir = e)), logical(1))])
+  env_info <- tryCatch({
+    e <- parent.frame(); out <- character(0); depth <- 0
+    while (!identical(e, emptyenv()) && depth < 12) {
+      nms <- ls(e, all.names = FALSE)
+      if (length(nms)) {
+        cls <- vapply(nms, function(n) {
+          o <- tryCatch(get(n, envir = e, inherits = FALSE), error = function(err) NULL)
+          if (is.data.frame(o)) paste0(n, "[df ", nrow(o), "x", ncol(o), "]") else
+            if (is.function(o)) "" else paste0(n, "[", class(o)[1], "]")
+        }, "")
+        cls <- cls[cls != "" & !grepl("^pf_", cls)]
+        if (length(cls)) out <- c(out, paste0("  env ", depth, ": ", paste(cls, collapse = ", ")))
+      }
       if (identical(e, globalenv())) break
-      e <- parent.env(e)
+      e <- parent.env(e); depth <- depth + 1
     }
-    unique(out)
-  }, error = function(e) "n/a")
+    out
+  }, error = function(e) paste("environment scan failed:", conditionMessage(e)))
   txt <- c(
     paste0("pid5_platform.R ", pf_version_tag, "; R ", R.version$major, ".", R.version$minor,
            "; ggplot2 ", as.character(utils::packageVersion("ggplot2"))),
     paste0("version = ", pf$version, ", lang = ", pf$lang, ", mode = ", pf$mode,
            ", frame = ", pf$frame$frame),
-    paste0("data frames visible: ", paste(env_objs, collapse = ", ")),
+    "objects visible from the results page (functions omitted):", env_info,
     pf_describe_df(names[["intro"]], pf$raw_intro),
     pf_describe_df(names[["items"]], pf$raw_items),
     pf_describe_df(names[["scores"]], pf$raw_scores),
     paste0("domains raw: ", paste(round(pf$domains$raw, 3), collapse = ", ")),
     paste0("domains T:   ", paste(pf$domains$T, collapse = ", "))
   )
-  cat('<details style="margin-top:20px;"><summary class="pf-small">Diagnostics</summary><pre style="font-size:80%; white-space:pre-wrap;">',
-      pf_esc(paste(txt, collapse = "\n")), "</pre></details>\n")
+  cat('<div style="margin-top:24px; border:1px solid #bbb; padding:8px 12px; background:#fafafa;">',
+      '<p class="pf-small"><b>Diagnostics</b> (shown because no norm value could be computed; please copy this block when reporting the problem)</p>',
+      '<pre style="font-size:80%; white-space:pre-wrap;">', pf_esc(paste(txt, collapse = "\n")),
+      "</pre></div>\n")
   invisible()
 }
 
@@ -720,7 +731,7 @@ pf_plot_domains <- function(pf) {
   d <- rbind(pf$domains, pf$total)
   n_dom <- nrow(pf$domains)
   lab <- vapply(c(unlist(T$domains[pf$domains$scale]), T$total$label),
-                function(z) paste(strwrap(z, width = 14), collapse = "\n"), "")
+                function(z) paste(strwrap(z, width = 12), collapse = "\n"), "")
   d$label <- factor(lab, levels = lab)
   d$is_total <- d$scale == "total"
   d$shape <- ifelse(d$is_total, ifelse(d$flag_missing, 5, 18), ifelse(d$flag_missing, 1, 16))
@@ -742,7 +753,8 @@ pf_plot_domains <- function(pf) {
     ggplot2::scale_shape_identity() + ggplot2::scale_size_identity() +
     ggplot2::annotate("text", x = n + 0.75, y = pf_thresholds + 0.6, label = unlist(sev),
                       hjust = 0, vjust = 0, size = 3.2, colour = "grey30") +
-    ggplot2::scale_x_discrete(expand = ggplot2::expansion(add = c(0.6, 1.9))) +
+    ggplot2::scale_x_discrete(expand = ggplot2::expansion(add = c(0.6, 1.9)),
+                              guide = ggplot2::guide_axis(n.dodge = 2)) +
     ggplot2::scale_y_continuous(breaks = seq(0, 100, 10), minor_breaks = NULL) +
     ggplot2::coord_cartesian(ylim = lims, clip = "off") +
     ggplot2::labs(x = NULL, y = R$axis_T, title = T$instruments[[pf$version]],
