@@ -1,6 +1,6 @@
 {
   "_comment": "Replace GITHUB-USER in base_url with the GitHub account that hosts the repository (base_url must end with a slash).",
-  "base_url": "https://raw.githubusercontent.com/GITHUB-USER/pid5-norms-platform/main/assets/",
+  "base_url": "https://raw.githubusercontent.com/jzpsych/pid5-norms-platform/main/assets/",
   "logo_file": "logo_uni_kassel.png",
   "contact_email": "jz@uni-kassel.de",
   "contact_url": "https://www.uni-kassel.de/fb01/institute/institut-fuer-psychologie/fachgebiete/differentielle-psychologie",
