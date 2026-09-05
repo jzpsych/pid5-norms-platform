@@ -33,7 +33,7 @@
 #   extrap     raw score outside the range observed in the reference sample
 # =============================================================================
 
-pf_version_tag <- "2026-09-06"
+pf_version_tag <- "2026-09-06b"
 
 # UTF-8 output (umlauts in cat()) also on hosts with a non-UTF-8 default locale
 if (!isTRUE(l10n_info()[["UTF-8"]])) {
@@ -743,8 +743,6 @@ pf_plot_domains <- function(pf) {
   p <- ggplot2::ggplot(d, ggplot2::aes(x = label, y = T))
   p <- pf_plot_base(p, lims[1], lims[2], R)
   p <- p +
-    ggplot2::geom_line(data = d[!d$is_total, ], ggplot2::aes(group = 1), colour = "grey50",
-                       linewidth = 0.6, na.rm = TRUE) +
     ggplot2::geom_vline(xintercept = n_dom + 0.5, colour = "grey60", linetype = "dotted") +
     ggplot2::geom_linerange(ggplot2::aes(ymin = T_lo, ymax = T_hi), colour = "#1f4e79", linewidth = 2.2,
                             alpha = 0.85, na.rm = TRUE) +
