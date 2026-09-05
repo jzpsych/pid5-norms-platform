@@ -227,9 +227,16 @@ pf_esc <- function(x) {
 }
 
 pf_one <- function(df, col) {
-  # first row value of a survey column, or NA
+  # value of a survey column for the current session: the last row that holds
+  # a non-missing value (formr may pass several rows, e.g., an abandoned first
+  # attempt followed by the completed one)
   if (is.null(df) || !is.data.frame(df) || nrow(df) == 0 || !col %in% names(df)) return(NA)
-  df[[col]][1]
+  v <- df[[col]]
+  if (is.factor(v)) v <- as.character(v)
+  v <- as.vector(v)
+  ok <- which(!is.na(v) & !(is.character(v) & v == ""))
+  if (length(ok) == 0) return(NA)
+  v[max(ok)]
 }
 
 pf_nearest_row <- function(raw_col, value) {
@@ -471,6 +478,7 @@ pf_run <- function(version, lang, base_url, intro, items = NULL, scores = NULL) 
 
   list(ok = TRUE, version = version, lang = lang, inst = inst, texts = texts,
        mode = mode, frame = fr, domains = domains, total = total, facets = facets,
+       raw_intro = intro, raw_items = items, raw_scores = scores,
        x = sc$x, item_texts = item_texts)
 }
 
@@ -618,6 +626,56 @@ pf_render_high_items <- function(pf) {
     out <- paste0(out, '<tr><td class="num">', k, "</td><td>", pf_esc(txt), rev_mark, "</td><td>", member(k), "</td></tr>\n")
   }
   cat(out, "</table>\n")
+  invisible()
+}
+
+# -----------------------------------------------------------------------------
+# 6b. Diagnostics (shown only when no norm value could be computed)
+# -----------------------------------------------------------------------------
+
+pf_describe_df <- function(nm, df) {
+  if (is.null(df)) return(paste0(nm, ": not found"))
+  if (!is.data.frame(df)) return(paste0(nm, ": class ", paste(class(df), collapse = "/"), ", not a data frame"))
+  cols <- names(df)
+  show <- setdiff(cols, c("session", "created", "modified", "ended", "expired"))
+  show <- show[!grepl("^pid5_", show)]                   # item columns are too many
+  show <- head(show, 12)
+  vals <- if (nrow(df) > 0) vapply(show, function(c) {
+    v <- df[[c]]; paste(utils::head(as.character(v), 3), collapse = " | ")
+  }, "") else character(0)
+  paste0(nm, ": class ", paste(class(df), collapse = "/"), ", ", nrow(df), " rows, ",
+         length(cols), " columns; item columns: ", sum(grepl("^pid5_", cols)), "\n  columns: ",
+         paste(head(cols, 40), collapse = ", "), if (length(cols) > 40) " ..." else "", "\n",
+         if (length(vals)) paste0("  values (first rows): ", paste(show, "=", vals, collapse = "; "), "\n") else "")
+}
+
+pf_render_diagnostics <- function(pf, names = c(intro = "", items = "", scores = ""), force = FALSE) {
+  if (!isTRUE(pf$ok)) return(invisible())
+  all_na <- all(is.na(pf$domains$T)) && all(is.na(pf$total$T))
+  if (!all_na && !force) return(invisible())
+  env_objs <- tryCatch({
+    e <- parent.frame(); out <- character(0)
+    while (!identical(e, emptyenv())) {
+      nms <- ls(e); if (length(nms)) out <- c(out, nms[vapply(nms, function(n) is.data.frame(get(n, envir = e)), logical(1))])
+      if (identical(e, globalenv())) break
+      e <- parent.env(e)
+    }
+    unique(out)
+  }, error = function(e) "n/a")
+  txt <- c(
+    paste0("pid5_platform.R ", pf_version_tag, "; R ", R.version$major, ".", R.version$minor,
+           "; ggplot2 ", as.character(utils::packageVersion("ggplot2"))),
+    paste0("version = ", pf$version, ", lang = ", pf$lang, ", mode = ", pf$mode,
+           ", frame = ", pf$frame$frame),
+    paste0("data frames visible: ", paste(env_objs, collapse = ", ")),
+    pf_describe_df(names[["intro"]], pf$raw_intro),
+    pf_describe_df(names[["items"]], pf$raw_items),
+    pf_describe_df(names[["scores"]], pf$raw_scores),
+    paste0("domains raw: ", paste(round(pf$domains$raw, 3), collapse = ", ")),
+    paste0("domains T:   ", paste(pf$domains$T, collapse = ", "))
+  )
+  cat('<details style="margin-top:20px;"><summary class="pf-small">Diagnostics</summary><pre style="font-size:80%; white-space:pre-wrap;">',
+      pf_esc(paste(txt, collapse = "\n")), "</pre></details>\n")
   invisible()
 }
 
