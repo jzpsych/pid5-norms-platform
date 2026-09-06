@@ -15,7 +15,7 @@ Live versions: <https://pid5fuerendanwender.rforms.org/> (German) and
 assets/                    Everything that must be hosted publicly (base_url)
   pid5_platform.R          Scoring, norm lookup, tables, figures (central logic)
   norms_<version>.csv      Reduced norm tables per instrument (from prepare_norm_assets.R)
-  norms_<version>_age.csv  Continuous-age norms (optional, not yet generated)
+  norms_<version>_age.rds  Continuous-age norms (optional; see below)
   texts_de.json, texts_en.json   All texts (copied from build/, loaded by the R script)
   items_<version>_<lang>.tsv     Item texts for the list "Items with the highest endorsement"
   logo_uni_kassel.png      Logo for the page header (file name set in config.json)
@@ -65,12 +65,23 @@ is computed from the entered facet or domain sums and the counts of missing
 items. It appears as the last row of the domain table and as a separated
 diamond in the domain profile.
 
-Reference group: general population, or gender by age group. Because the
-tables contain no pure age or gender norms, the cell-specific norms require
-both entries. Gender "diverse/not specified" or a missing age fall back to the
-general population norms, with a note. Continuous-age norms are prepared in
-the code (`frame == "age"`) but disabled until the files
-`norms_<version>_age.csv` exist (`enable_continuous_age` in config.json).
+Reference group: general population, gender by age group, or gender by year
+of age (continuous-age norms). Because the tables contain no pure age or
+gender norms, both entries are required for the two specific frames. Gender
+"diverse/not specified" or a missing age fall back to the general population
+norms, with a note.
+
+Continuous-age norms: the T score and percentile come from the kernel-weighted
+tables of pipeline stage M3b (per year of age, 18 to 85; ages above 85 use the
+row for 85). These tables carry no integrated individual interval unless the
+pipeline is extended to compute one per year of age. If the columns
+`T_int_lo`/`T_int_hi` are present in `norms_<version>_age.rds`, the platform
+uses them directly; otherwise it transfers the integrated interval of the
+gender by age-band cell and centres it on the age-specific T score (same width
+and asymmetry; marked as an approximation in a footnote). If the file for an
+instrument is missing, the platform falls back to the age-band norms and says
+so. The option is shown in the intro when `enable_continuous_age` is true in
+config.json.
 
 ## Deployment
 
@@ -104,10 +115,12 @@ the code (`frame == "age"`) but disabled until the files
    "Import" with `dist/pid5fuerendanwender.json`; likewise `pid5fortherapists`.
    Publish the runs, then click through all eight paths (four instruments by
    two input modes) and the reference-group variants.
-7. **Later:** continuous-age norms. Call `prepare_norm_assets.R` with the file
-   `norm_tables_age_continuous.csv` (expects a column `age`), upload the files,
-   set `enable_continuous_age: true`, rebuild, and re-import the run (only the
-   intro changes).
+7. **Continuous-age norms:** run
+   `Rscript assets/prepare_norm_assets.R <norm_tables_long.csv> <norm_tables_age_continuous.csv> assets`
+   on the machine that holds the pipeline output. This writes
+   `assets/norms_<version>_age.rds` (xz-compressed, about 0.5 to 4 MB each) and
+   reports whether integrated intervals were found. Push the four files; no
+   rebuild or re-import is needed, the results pages pick them up at runtime.
 
 ## Local testing without formr
 
@@ -153,7 +166,7 @@ New:
 - T-based profile display with intervals for domains and facets.
 - Interpretation notes following the manuscript (judge the interval; regression effect at extreme scores).
 - Two languages from one source; texts as a resource.
-- Preparation for continuous-age norms.
+- Continuous-age norms as a third reference frame (T from the kernel tables, interval transferred from the age-band cell unless the pipeline supplies integrated intervals per year of age).
 - Total score (norm tables of 2026-09-05, 32,967 rows, including the tick fix of the directly observed PID5BF+M norms).
 
 ## License and reuse

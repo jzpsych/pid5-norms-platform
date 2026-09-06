@@ -5,7 +5,7 @@
   "contact_email": "jz@uni-kassel.de",
   "contact_url": "https://www.uni-kassel.de/fb01/institute/institut-fuer-psychologie/fachgebiete/differentielle-psychologie",
   "year": "2026",
-  "enable_continuous_age": false,
+  "enable_continuous_age": true,
   "runs": {
     "de": {
       "run_name": "pid5fuerendanwender",

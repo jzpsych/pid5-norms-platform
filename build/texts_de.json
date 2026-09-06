@@ -60,11 +60,16 @@
       "0": "0 bis 3",
       "1": "1 bis 4"
     },
-    "sum_label": "Summenwert",
-    "missing_label": "Nicht beantwortete Items",
+    "sum_label": "{scale} ({n} Items): Summenwert",
+    "missing_label": "{scale}: nicht beantwortete Items",
     "error_too_many_missing": "Diese Skala hat nur {n} Items. Bitte prüfen Sie die Anzahl der nicht beantworteten Items.",
     "error_sum_too_high": "Der Summenwert ist höher als bei der angegebenen Anzahl beantworteter Items und der gewählten Kodierung möglich. Bitte prüfen Sie Summenwert, Kodierung und Anzahl der nicht beantworteten Items.",
-    "items_suffix": "Items"
+    "items_suffix": "Items",
+    "complete_label": "Wurden alle Items des Fragebogens beantwortet?",
+    "complete_choices": {
+      "1": "Ja",
+      "0": "Nein, einzelne Items fehlen"
+    }
   },
   "items": {
     "heading": "Fragebogen",
@@ -132,7 +137,9 @@
     "col_item_facet": "Facette",
     "no_results": "Es liegen keine Eingaben vor. Bitte starten Sie die Auswertung neu.",
     "load_error": "Die Normtabellen konnten nicht geladen werden. Bitte versuchen Sie es später erneut oder wenden Sie sich an die Projektverantwortlichen.",
-    "reversed_marker": "umgepolt"
+    "reversed_marker": "umgepolt",
+    "footnote_age_interval": "Bei altersgenauen Normen stammt der T-Wert aus den Kernel-gewichteten Normen für das angegebene Lebensjahr. Das 95%-Kredibilitätsintervall wird aus der zugehörigen Alters- und Geschlechtsgruppe übertragen und um den altersgenauen T-Wert zentriert; Breite und Asymmetrie des Intervalls entsprechen also der Gruppennorm (Näherung).",
+    "frame_fallback_age_table": "Altersgenaue Normen sind für dieses Instrument derzeit nicht verfügbar. Es wurden die Normen der Alters- und Geschlechtsgruppe verwendet."
   },
   "instruments": {
     "full": "PID-5 (220 Items)",

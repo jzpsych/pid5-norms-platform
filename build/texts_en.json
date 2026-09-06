@@ -60,11 +60,16 @@
       "0": "0 to 3",
       "1": "1 to 4"
     },
-    "sum_label": "Sum score",
-    "missing_label": "Items not answered",
+    "sum_label": "{scale} ({n} items): sum score",
+    "missing_label": "{scale}: items not answered",
     "error_too_many_missing": "This scale has only {n} items. Please check the number of unanswered items.",
     "error_sum_too_high": "The sum score is higher than possible with the stated number of answered items and the selected coding. Please check the sum score, the coding, and the number of unanswered items.",
-    "items_suffix": "items"
+    "items_suffix": "items",
+    "complete_label": "Were all items of the questionnaire answered?",
+    "complete_choices": {
+      "1": "Yes",
+      "0": "No, some items are missing"
+    }
   },
   "items": {
     "heading": "Questionnaire",
@@ -132,7 +137,9 @@
     "col_item_facet": "Facet",
     "no_results": "No input is available. Please restart the scoring session.",
     "load_error": "The norm tables could not be loaded. Please try again later or contact the project team.",
-    "reversed_marker": "reverse-keyed"
+    "reversed_marker": "reverse-keyed",
+    "footnote_age_interval": "With continuous-age norms, the T score comes from the kernel-weighted norms for the specified year of age. The 95% credible interval is transferred from the corresponding gender and age group and centered on the age-specific T score; the width and asymmetry of the interval therefore correspond to the group norm (approximation).",
+    "frame_fallback_age_table": "Continuous-age norms are currently not available for this instrument. The norms of the gender and age group were used."
   },
   "instruments": {
     "full": "PID-5 (220 items)",

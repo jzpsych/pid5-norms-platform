@@ -133,9 +133,13 @@ def finalize(items):
 # Unit factories
 # ----------------------------------------------------------------------------
 
-def survey_unit(position, name, items, use_paging=0):
+def survey_unit(position, name, items, use_paging=0, pct=(0, 100)):
+    """pct = (add_percentage_points, displayed_percentage_maximum): the range of
+    the progress bar this survey covers, so that intro and input page add up."""
     settings = dict(SURVEY_SETTINGS)
     settings["use_paging"] = use_paging
+    settings["add_percentage_points"] = pct[0]
+    settings["displayed_percentage_maximum"] = pct[1]
     return {
         "type": "Survey", "description": name, "position": position, "special": "",
         "survey_data": {"name": name, "items": finalize(items), "settings": settings},
@@ -204,7 +208,7 @@ def intro_survey(position, prefix, cfg, texts, header):
         submit("submit_intro", texts["common"]["next"]),
     ]
     items[10]["showif"] = 'frame != "overall"'
-    return survey_unit(position, f"{prefix}_intro", items)
+    return survey_unit(position, f"{prefix}_intro", items, pct=(0, 15))
 
 
 def scores_survey(position, prefix, version, texts, header):
@@ -216,21 +220,27 @@ def scores_survey(position, prefix, version, texts, header):
         note("header", header),
         note("instruction", f'<h3>{S["heading"]}: {texts["instruments"][version]}</h3>\n{S["instruction"]}'),
         mc("coding", S["coding_label"], S["coding_choices"]),
+        mc("complete", S["complete_label"], S["complete_choices"]),
     ]
     for sc in order:
         if sc not in scales:
             continue
         n = scales[sc]
-        items.append(note(f"h_{sc}", f'<h4 style="margin-top:22px;">{labels[sc]} '
-                                     f'<span style="color:#666; font-weight:normal;">({n} {S["items_suffix"]})</span></h4>'))
-        items.append(number(f"s_{sc}", S["sum_label"], 0, 4 * n, 1))
-        items.append(number(f"m_{sc}", S["missing_label"], 0, n, 1))
+        items.append(number(f"s_{sc}", S["sum_label"].replace("{scale}", labels[sc]).replace("{n}", str(n)),
+                            0, 4 * n, 1))
+        # shown only if not all items were answered; an untouched or hidden
+        # field is stored as NA and treated as 0 by the scoring code
+        m_item = number(f"m_{sc}", S["missing_label"].replace("{scale}", labels[sc]), 0, n, 1,
+                        optional=1, showif="complete == 0")
+        m_item["value"] = "0"
+        items.append(m_item)
+        m_safe = f"ifelse(is.na(m_{sc}), 0, m_{sc})"
         items.append(block(f"e1_{sc}", S["error_too_many_missing"].replace("{n}", str(n)),
-                           f"m_{sc} > {n}"))
+                           f"isTRUE({m_safe} > {n})"))
         items.append(block(f"e2_{sc}", S["error_sum_too_high"],
-                           f"s_{sc} > 3 * ({n} - m_{sc}) + (coding == 1) * ({n} - m_{sc})"))
+                           f"isTRUE(s_{sc} > (3 + isTRUE(coding == 1)) * ({n} - {m_safe}))"))
     items.append(submit("submit_scores", texts["common"]["next"]))
-    return survey_unit(position, f"{prefix}_scores_{version}", items)
+    return survey_unit(position, f"{prefix}_scores_{version}", items, pct=(15, 100))
 
 
 def load_items(version, lang):
@@ -268,13 +278,25 @@ def items_survey(position, prefix, version, lang, texts, header, warnings):
                             cls="hide_label\nmc_width80\nlabel_align_left\nleft400"))
         idx += n_page
         items.append(submit(f"submit_{p}", texts["common"]["next"]))
-    use_paging = 1 if len(pages) > 1 else 0
-    return survey_unit(position, f"{prefix}_items_{version}", items, use_paging=use_paging)
+    use_paging = 1 if len(pages) > 1 else 0   # paged surveys run their own 0 to 100 bar
+    return survey_unit(position, f"{prefix}_items_{version}", items, use_paging=use_paging, pct=(15, 100))
+
+
+def formr_vars(version):
+    """Every survey column the results page needs, as a space-separated word list.
+    formr includes a column only if its name (or its stem without a trailing
+    _<digits>, e.g. 'pid5' for pid5_1..pid5_220) occurs as a word in the page."""
+    level, scales = SCALE_ENTRY[version]
+    names = ["instrument", "mode", "frame", "age", "gender", "coding", "complete", "pid5"]
+    for sc in scales:
+        names += [f"s_{sc}", f"m_{sc}"]
+    return " ".join(names)
 
 
 def endpage_body(template, cfg, texts, lang, lang_cfg, version, prefix, header):
     reset_url = lang_cfg["run_url"].rstrip("/") + "/logout"
     repl = {
+        "{{FORMR_VARS}}": formr_vars(version),
         "{{HEADER_HTML}}": header,
         "{{BASE_URL}}": cfg["base_url"],
         "{{LANG}}": lang,
@@ -340,7 +362,7 @@ def build_run(lang, cfg, warnings):
             "header_image_path": None, "description": texts["meta"]["subtitle"],
             "footer_text": footer_html(cfg, texts), "public_blurb": None, "privacy": None,
             "tos": None, "cron_active": 1, "custom_js": "", "custom_css": "", "custom_r": "",
-            "secrets": [], "expiresOn": "2036-12-31",
+            "secrets": [], "expiresOn": "2031-12-31",
         },
         "files": [],
     }

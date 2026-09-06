@@ -1,6 +1,10 @@
 {{HEADER_HTML}}
 
 ```{r pf_setup, echo=FALSE, results="asis", message=FALSE, warning=FALSE}
+# formr passes only those survey columns whose names appear literally in this
+# page (UnitSession::getRunDataNeeded). The following line therefore lists every
+# variable the scoring code needs; do not remove it.
+# formr_vars: {{FORMR_VARS}}
 PF_BASE    <- "{{BASE_URL}}"
 PF_LANG    <- "{{LANG}}"
 PF_VERSION <- "{{VERSION}}"
@@ -41,6 +45,8 @@ if (pf_loaded && isTRUE(pf$ok) && !is.null(pf$facets)) {
 if (pf_loaded) {
   pf_render_notes(pf)
   pf_render_high_items(pf)
+  pf_render_diagnostics(pf, names = c(intro = "{{INTRO_SURVEY}}", items = "{{ITEMS_SURVEY}}",
+                                      scores = "{{SCORES_SURVEY}}"))
 }
 ```
 
