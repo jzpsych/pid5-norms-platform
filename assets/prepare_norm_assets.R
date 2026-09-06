@@ -10,7 +10,7 @@
 # Input:  norm_tables_long.csv            (pipeline stage X1, 26,046 rows)
 #         norm_tables_age_continuous.csv  (optional; continuous-age tables)
 # Output: assets/norms_<version>.csv      (age-band and overall norms)
-#         assets/norms_<version>_age.csv  (continuous-age norms, if input given)
+#         assets/norms_<version>_age.rds  (continuous-age norms, if input given)
 #
 # Kept columns: version, level, scale, gender, age_group (or age), raw, T,
 # T_int_lo, T_int_hi, pctl_med, extrapolation. T values are rounded to one
@@ -62,13 +62,34 @@ stopifnot(all(c("T_int_lo", "T_int_hi") %in% names(long)))
 write_split(reduce(long, "age_group"), "age_group", "")
 
 if (file.exists(in_cont)) {
+  # Continuous-age tables (pipeline stage M3b, export norm_tables_age_continuous.csv):
+  # one row per version x scale x gender x age (18..85) x raw. They carry the
+  # norm band (T_lo, T_hi) but, unless the pipeline is extended, no integrated
+  # individual interval. The platform uses T_int_lo/T_int_hi if present and
+  # otherwise transfers the interval of the gender x age-band cell (see
+  # pf_lookup() in pid5_platform.R). Written as .rds because the CSV would be
+  # about 25 MB for the full PID-5 and is loaded on every page view.
   cont <- read.csv(in_cont, stringsAsFactors = FALSE)
-  # The continuous table is expected to carry an integer 'age' column
-  # instead of 'age_group'. Adjust here if the column is named differently.
-  if (!"age" %in% names(cont))
-    stop("Continuous table: no 'age' column found. Columns: ",
-         paste(names(cont), collapse = ", "))
-  write_split(reduce(cont, "age"), "age", "_age")
+  need <- c("version", "level", "scale", "gender", "age", "raw", "T", "pctl_med", "extrapolation")
+  miss <- setdiff(need, names(cont))
+  if (length(miss)) stop("Continuous table: missing columns: ", paste(miss, collapse = ", "),
+                         ". Columns found: ", paste(names(cont), collapse = ", "))
+  has_int <- all(c("T_int_lo", "T_int_hi") %in% names(cont))
+  keep <- c(need, if (has_int) c("T_int_lo", "T_int_hi"), intersect("half_width", names(cont)))
+  cont <- cont[, keep]
+  cont$T <- round(cont$T, 1); cont$pctl_med <- round(cont$pctl_med, 4); cont$raw <- round(cont$raw, 4)
+  if (has_int) { cont$T_int_lo <- round(cont$T_int_lo, 1); cont$T_int_hi <- round(cont$T_int_hi, 1) }
+  cont$extrapolation <- as.integer(as.logical(cont$extrapolation))
+  cont$age <- as.integer(cont$age)
+  for (v in sort(unique(cont$version))) {
+    dv <- cont[cont$version == v, ]
+    dv <- dv[order(dv$level, dv$scale, dv$gender, dv$age, dv$raw), ]
+    rownames(dv) <- NULL
+    f <- file.path(out_dir, sprintf("norms_%s_age.rds", v))
+    saveRDS(dv, f, compress = "xz")
+    cat(sprintf("%-32s %7d rows  %5.2f MB  integrated intervals: %s\n", basename(f), nrow(dv),
+                file.size(f) / 1e6, if (has_int) "yes" else "no (platform transfers the band-cell interval)"))
+  }
 } else {
   cat("No continuous-age table found at", in_cont, "(skipped)\n")
 }

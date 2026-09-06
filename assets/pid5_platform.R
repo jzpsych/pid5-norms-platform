@@ -21,7 +21,10 @@
 #
 # Norm files (created by prepare_norm_assets.R):
 #   <base_url>/norms_<version>.csv       cells m/f x four age groups + overall
-#   <base_url>/norms_<version>_age.csv   continuous-age norms (optional)
+#   <base_url>/norms_<version>_age.rds   continuous-age norms (optional; per year of
+#                                        age 18..85; if they carry no T_int_lo/T_int_hi,
+#                                        the interval of the gender x age-band cell is
+#                                        transferred and centred on the age-specific T)
 # Text files:
 #   <base_url>/texts_<lang>.json
 #   <base_url>/items_<version>_<lang>.tsv  (item texts; optional)
@@ -33,7 +36,7 @@
 #   extrap     raw score outside the range observed in the reference sample
 # =============================================================================
 
-pf_version_tag <- "2026-09-06b"
+pf_version_tag <- "2026-09-06c"
 
 # UTF-8 output (umlauts in cat()) also on hosts with a non-UTF-8 default locale
 if (!isTRUE(l10n_info()[["UTF-8"]])) {
@@ -195,6 +198,15 @@ pf_missing_tolerance <- 0.8   # flag scales with < 80 % of items answered
 pf_read_url <- function(base_url, file, reader) {
   path <- if (grepl("^https?://", base_url)) paste0(base_url, file) else file.path(base_url, file)
   reader(path)
+}
+
+pf_read_rds <- function(path) {
+  # download first so that readRDS can handle any compression (gzip, xz)
+  if (grepl("^https?://", path)) {
+    tmp <- tempfile(fileext = ".rds"); on.exit(unlink(tmp))
+    utils::download.file(path, tmp, mode = "wb", quiet = TRUE)
+    readRDS(tmp)
+  } else readRDS(path)
 }
 
 pf_read_csv <- function(path) {
@@ -390,7 +402,9 @@ pf_resolve_frame <- function(intro, texts, cont_available) {
       notes <- c(notes, R$frame_fallback_age); frame <- "overall"
     }
   }
-  if (frame == "age" && !cont_available) frame <- "cell"
+  if (frame == "age" && !cont_available) {
+    notes <- c(notes, R$frame_fallback_age_table); frame <- "cell"
+  }
 
   age_group <- if (frame != "overall")
     as.character(cut(age, pf_age_breaks, labels = pf_age_labels, right = FALSE)) else NA_character_
@@ -406,29 +420,42 @@ pf_resolve_frame <- function(intro, texts, cont_available) {
        label = label, notes = notes)
 }
 
-pf_lookup <- function(norms, level, scale, raw, fr) {
+pf_lookup <- function(norms, level, scale, raw, fr, norms_band = NULL) {
   out <- data.frame(T = NA_real_, T_lo = NA_real_, T_hi = NA_real_, pctl = NA_real_,
-                    extrap = NA, stringsAsFactors = FALSE)
+                    extrap = NA, approx = FALSE, stringsAsFactors = FALSE)
   if (is.na(raw)) return(out)
   d <- norms[norms$level == level & norms$scale == scale, , drop = FALSE]
   if (fr$frame == "age") {
-    ages <- d$age
-    a <- min(max(fr$age, min(ages, na.rm = TRUE)), max(ages, na.rm = TRUE))
+    a <- min(max(fr$age, min(d$age, na.rm = TRUE)), max(d$age, na.rm = TRUE))
     d <- d[d$gender == fr$gender & d$age == a, , drop = FALSE]
   } else {
     d <- d[d$gender == fr$gender & d$age_group == fr$age_group, , drop = FALSE]
   }
   if (nrow(d) == 0) return(out)
   i <- pf_nearest_row(d$raw, raw)
-  data.frame(T = d$T[i], T_lo = d$T_int_lo[i], T_hi = d$T_int_hi[i],
-             pctl = d$pctl_med[i], extrap = as.logical(d$extrapolation[i]),
-             stringsAsFactors = FALSE)
+  res <- data.frame(T = d$T[i], T_lo = NA_real_, T_hi = NA_real_, pctl = d$pctl_med[i],
+                    extrap = as.logical(d$extrapolation[i]), approx = FALSE, stringsAsFactors = FALSE)
+  if (all(c("T_int_lo", "T_int_hi") %in% names(d)) && !is.na(d$T_int_lo[i])) {
+    res$T_lo <- d$T_int_lo[i]; res$T_hi <- d$T_int_hi[i]
+  } else if (fr$frame == "age" && !is.null(norms_band)) {
+    # Transfer the integrated interval of the gender x age-band cell: same
+    # width and asymmetry, centred on the age-specific T (approximation).
+    b <- norms_band[norms_band$level == level & norms_band$scale == scale &
+                    norms_band$gender == fr$gender & norms_band$age_group == fr$age_group, , drop = FALSE]
+    if (nrow(b)) {
+      j <- pf_nearest_row(b$raw, raw)
+      res$T_lo <- round(res$T - (b$T[j] - b$T_int_lo[j]), 1)
+      res$T_hi <- round(res$T + (b$T_int_hi[j] - b$T[j]), 1)
+      res$approx <- TRUE
+    }
+  }
+  res
 }
 
-pf_add_norms <- function(tab, norms, fr) {
+pf_add_norms <- function(tab, norms, fr, norms_band = NULL) {
   if (is.null(tab)) return(NULL)
   res <- do.call(rbind, lapply(seq_len(nrow(tab)), function(i)
-    pf_lookup(norms, tab$level[i], tab$scale[i], tab$raw[i], fr)))
+    pf_lookup(norms, tab$level[i], tab$scale[i], tab$raw[i], fr, norms_band)))
   tab <- cbind(tab, res)
   tab$flag_missing <- !is.na(tab$raw) & tab$n_answered < pf_missing_tolerance * tab$n_items
   tab$flag_none    <- is.na(tab$raw)
@@ -459,16 +486,17 @@ pf_run <- function(version, lang, base_url, intro, items = NULL, scores = NULL) 
   want_age <- identical(as.character(pf_one(intro, "frame")), "age")
   norms_age <- NULL
   if (want_age) {
-    norms_age <- tryCatch(pf_read_url(base_url, paste0("norms_", version, "_age.csv"), pf_read_csv),
+    norms_age <- tryCatch(pf_read_url(base_url, paste0("norms_", version, "_age.rds"), pf_read_rds),
                           error = function(e) NULL)
   }
   fr <- pf_resolve_frame(intro, texts, cont_available = !is.null(norms_age))
   use_norms <- if (fr$frame == "age") norms_age else norms
+  band <- if (fr$frame == "age") norms else NULL
 
   sc <- if (mode == "items") pf_score_items(items, version) else pf_score_sums(scores, version)
-  domains <- pf_add_norms(sc$domains, use_norms, fr)
-  total   <- pf_add_norms(sc$total, use_norms, fr)
-  facets  <- if (inst$report_facets) pf_add_norms(sc$facets, use_norms, fr) else NULL
+  domains <- pf_add_norms(sc$domains, use_norms, fr, band)
+  total   <- pf_add_norms(sc$total, use_norms, fr, band)
+  facets  <- if (inst$report_facets) pf_add_norms(sc$facets, use_norms, fr, band) else NULL
 
   item_texts <- NULL
   if (mode == "items") {
@@ -586,6 +614,8 @@ pf_render_tables <- function(pf) {
   cat('<p class="pf-small">', R$footnote_pctl, "</p>\n")
   if (any_missing) cat('<p class="pf-small">', R$footnote_missing, "</p>\n")
   if (any_extrap)  cat('<p class="pf-small">', R$footnote_extrapolated, "</p>\n")
+  if (pf$frame$frame == "age" && any(c(pf$domains$approx, pf$total$approx, pf$facets$approx), na.rm = TRUE))
+    cat('<p class="pf-small">', R$footnote_age_interval, "</p>\n")
   invisible()
 }
 
