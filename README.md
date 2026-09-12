@@ -14,12 +14,11 @@ Live versions: <https://pid5fuerendanwender.rforms.org/> (German) and
 ```
 assets/                    Everything that must be hosted publicly (base_url)
   pid5_platform.R          Scoring, norm lookup, tables, figures (central logic)
-  norms_<version>.csv      Reduced norm tables per instrument (from prepare_norm_assets.R)
+  norms_<version>.csv      Reduced norm tables per instrument (stage X1 of the pipeline, output/platform/)
   norms_<version>_age.rds  Continuous-age norms (optional; see below)
   texts_de.json, texts_en.json   All texts (copied from build/, loaded by the R script)
   items_<version>_<lang>.tsv     Item texts for the list "Items with the highest endorsement"
   logo_uni_kassel.png      Logo for the page header (file name set in config.json)
-  prepare_norm_assets.R    Creates the norms_*.csv files from norm_tables_long.csv
 build/
   config.json              base_url, run names, contact data, switch for continuous-age norms
   texts_de.json, texts_en.json   Single source of all texts (surveys and results page)
@@ -115,12 +114,11 @@ config.json.
    "Import" with `dist/pid5fuerendanwender.json`; likewise `pid5fortherapists`.
    Publish the runs, then click through all eight paths (four instruments by
    two input modes) and the reference-group variants.
-7. **Continuous-age norms:** run
-   `Rscript assets/prepare_norm_assets.R <norm_tables_long.csv> <norm_tables_age_continuous.csv> assets`
-   on the machine that holds the pipeline output. This writes
-   `assets/norms_<version>_age.rds` (xz-compressed, about 0.5 to 4 MB each) and
-   reports whether integrated intervals were found. Push the four files; no
-   rebuild or re-import is needed, the results pages pick them up at runtime.
+7. **Norm files:** stage X1 of the norming pipeline writes the eight platform
+   files (`norms_<version>.csv`, `norms_<version>_age.rds`) to
+   `output/platform/`. After every production run, copy them into `assets/`
+   and push; no rebuild or re-import is needed, the results pages load them at
+   runtime.
 
 ## Local testing without formr
 
@@ -166,6 +164,7 @@ New:
 - T-based profile display with intervals for domains and facets.
 - Interpretation notes following the manuscript (judge the interval; regression effect at extreme scores).
 - Two languages from one source; texts as a resource.
+- Norm files produced directly by the pipeline (stage X1, folder platform/).
 - Continuous-age norms as a third reference frame (T from the kernel tables, interval transferred from the age-band cell unless the pipeline supplies integrated intervals per year of age).
 - Total score (norm tables of 2026-09-05, 32,967 rows, including the tick fix of the directly observed PID5BF+M norms).
 
@@ -173,7 +172,7 @@ New:
 
 This repository contains three kinds of content with different terms.
 
-**Code** (`assets/pid5_platform.R`, `assets/prepare_norm_assets.R`,
+**Code** (`assets/pid5_platform.R`,
 `build/build_runs.py`, `build/template_endpage.Rmd`, `test/run_local_test.R`):
 MIT License, see `LICENSE`. Reuse, modification, and integration into other
 applications are welcome.
