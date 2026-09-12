@@ -23,11 +23,15 @@ and psychoticism. The platform scores four versions:
 | PID5BF+M | 36 | 6 domains (including anankastia), total score |
 | PID-5-BF | 25 | 5 domains, total score |
 
-Where to obtain the questionnaires: the PID-5 and its short forms are
-distributed free of charge for research and clinical use by the American
-Psychiatric Association, see the DSM-5-TR online materials at
-<https://www.hogrefe.com/de/downloads/dsm-5-tr-online-material>. The German
-PID5BF+M is available from the Freie Universität Berlin at
+Where to obtain the questionnaires. The PID-5 is distributed free of charge
+for research and clinical use by the American Psychiatric Association. The
+German 220-item and 25-item versions are part of the DSM-5-TR online materials
+of the German publisher,
+<https://www.hogrefe.com/de/downloads/dsm-5-tr-online-material>; the English
+originals and the other short forms are available from the American
+Psychiatric Association,
+<https://www.psychiatry.org/psychiatrists/practice/dsm/educational-resources/assessment-measures>.
+The German PID5BF+M is available from Freie Universität Berlin,
 <https://www.ewi-psy.fu-berlin.de/psychologie/arbeitsbereiche/klinische_psychotherapie/Frageboegen/Persoenlichkeitsinventar-fuer-DSM-5-und-ICD-11_PID5BF__PID5BF_MDE/PID5BF_-M-DE-.pdf>.
 This repository contains the item texts only for operating the platform; see
 "License and reuse" below.
@@ -108,7 +112,28 @@ instrument is missing, the platform falls back to the age-band norms and says
 so. The option is shown in the intro when `enable_continuous_age` is true in
 config.json.
 
-## Deployment
+## Local testing without formr
+
+Requirements: R with ggplot2, jsonlite, knitr, rmarkdown, and pandoc.
+
+```
+Rscript test/run_local_test.R de full items cell f 29
+Rscript test/run_local_test.R en bf scores overall f 50
+Rscript test/run_local_test.R de bfplus_m scores cell m 71
+```
+
+Arguments: language, version (full, sf, bfplus_m, bf), mode (items, scores),
+reference group (overall, cell, age), gender (m, f, d), age. Output in
+`test/out/*.html`. The script replaces `base_url` with the local `assets/`
+folder; everything else is identical to live operation. The T scores and
+intervals of the test cases were spot-checked against `norm_tables_long.csv`.
+
+## Deployment (for maintainers)
+
+This and the following section document how the runs are built, hosted, and
+updated. They are internal documentation and are not needed to use the
+platform.
+
 
 1. **Hosting the assets.** Recommended: a public GitHub repository holding this
    project. Then `base_url` is the raw URL of the `assets/` folder, for example
@@ -145,22 +170,6 @@ config.json.
    `output/platform/`. After every production run, copy them into `assets/`
    and push; no rebuild or re-import is needed, the results pages load them at
    runtime.
-
-## Local testing without formr
-
-Requirements: R with ggplot2, jsonlite, knitr, rmarkdown, and pandoc.
-
-```
-Rscript test/run_local_test.R de full items cell f 29
-Rscript test/run_local_test.R en bf scores overall f 50
-Rscript test/run_local_test.R de bfplus_m scores cell m 71
-```
-
-Arguments: language, version (full, sf, bfplus_m, bf), mode (items, scores),
-reference group (overall, cell, age), gender (m, f, d), age. Output in
-`test/out/*.html`. The script replaces `base_url` with the local `assets/`
-folder; everything else is identical to live operation. The T scores and
-intervals of the test cases were spot-checked against `norm_tables_long.csv`.
 
 ## Changing texts
 
@@ -218,12 +227,8 @@ from them in `dist/*.json`): The items of the PID-5 are copyrighted by the
 American Psychiatric Association (see the links under "The instruments"). They are included here solely for operating
 this scoring platform. Further use is governed by the terms of use of the
 American Psychiatric Association; the MIT License of this repository does not
-extend to them. The German translation is from Zimmermann, J., Altenstein, D.,
-Krieger, T., Grosse Holtforth, M., Pretsch, J., Alexopoulos, J., Spitzer, C.,
-Benecke, C., Krueger, R. F., Markon, K. E., & Leising, D. (2014). The structure
-and correlates of self-reported DSM-5 maladaptive personality traits: Findings
-from two German-speaking samples. *Journal of Personality Disorders, 28*(4),
-518–540. <https://doi.org/10.1521/pedi_2014_28_130>
+extend to them. The German translation of the PID-5 is that of Zimmermann et
+al. (2014).
 
 Anyone who wants to use the norms programmatically without running this
 platform will find the complete tables in the Zenodo archive; an integration
@@ -239,10 +244,17 @@ Krueger, R. F., Derringer, J., Markon, K. E., Watson, D., & Skodol, A. E.
 inventory for DSM-5. *Psychological Medicine, 42*(9), 1879–1890.
 <https://doi.org/10.1017/S0033291711002674>
 
-Rek, K., Kerber, A., Kemper, C. J., & Zimmermann, J. (2021). Getting the
-Personality Inventory for DSM-5 ready for clinical practice: Norms of the
-German PID5BF+ and model-based scores for four PID-5 versions.
-*Diagnostica, 67*(4), 202–213. <https://doi.org/10.1026/0012-1924/a000279>
+Rek, K., Kerber, A., Kemper, C. J., & Zimmermann, J. (2021). *Getting the
+Personality Inventory for DSM-5 ready for clinical practice: Norm values and
+correlates in a representative sample from the German population* [Preprint].
+PsyArXiv. <https://doi.org/10.31234/osf.io/5hm43>
+
+Zimmermann, J., Altenstein, D., Krieger, T., Grosse Holtforth, M., Pretsch, J.,
+Alexopoulos, J., Spitzer, C., Benecke, C., Krueger, R. F., Markon, K. E., &
+Leising, D. (2014). The structure and correlates of self-reported DSM-5
+maladaptive personality traits: Findings from two German-speaking samples.
+*Journal of Personality Disorders, 28*(4), 518–540.
+<https://doi.org/10.1521/pedi_2014_28_130>
 
 Zimmermann, J., Kerber, A., Kemper, C. J., & Rek, K. (2026). *Getting the
 Personality Inventory for DSM-5 ready for clinical practice:
