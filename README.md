@@ -1,13 +1,40 @@
-# PID-5 Norms Platform (formr), Version 3
+# PID-5 Norms Platform (formr), Version 2
 
-A rebuilt formr scoring platform for the PID-5, PID-5-SF, PID5BF+M, and PID-5-BF
-based on the norm tables of Zimmermann, Kerber, Kemper, and Rek (2026). Two
-runs (German, English) are generated from a common template. All scoring logic
-lives in a single R script that the results pages load at runtime from a public
-URL.
+A formr scoring platform for the Personality Inventory for DSM-5 and its
+abbreviated versions, based on the population-representative norm tables of
+Zimmermann, Kerber, Kemper, and Rek (2026). Two runs (German, English) are
+generated from a common template. All scoring logic lives in a single R script
+that the results pages load at runtime from a public URL.
 
 Live versions: <https://pid5fuerendanwender.rforms.org/> (German) and
 <https://pid5fortherapists.rforms.org/> (English).
+
+## The instruments
+
+The PID-5 (Krueger et al., 2012) measures the 25 maladaptive trait facets of
+the Alternative DSM-5 Model for Personality Disorders, which are organized into
+the five domains negative affectivity, detachment, antagonism, disinhibition,
+and psychoticism. The platform scores four versions:
+
+| Version | Items | Scales scored here |
+|---|---|---|
+| PID-5 | 220 | 25 facets, 5 domains, total score |
+| PID-5-SF | 100 | 25 facets, 5 domains, total score |
+| PID5BF+M | 36 | 6 domains (including anankastia), total score |
+| PID-5-BF | 25 | 5 domains, total score |
+
+Where to obtain the questionnaires: the PID-5 and its short forms are
+distributed free of charge for research and clinical use by the American
+Psychiatric Association, see the DSM-5-TR online materials at
+<https://www.hogrefe.com/de/downloads/dsm-5-tr-online-material>. The German
+PID5BF+M is available from the Freie Universität Berlin at
+<https://www.ewi-psy.fu-berlin.de/psychologie/arbeitsbereiche/klinische_psychotherapie/Frageboegen/Persoenlichkeitsinventar-fuer-DSM-5-und-ICD-11_PID5BF__PID5BF_MDE/PID5BF_-M-DE-.pdf>.
+This repository contains the item texts only for operating the platform; see
+"License and reuse" below.
+
+What the platform adds to the questionnaires is the normative interpretation:
+percentile T scores for the German general population, conditional on age and
+gender, each with a 95% interval for the person's true score.
 
 ## Directory structure
 
@@ -43,8 +70,7 @@ test/
 ```
 
 Every input page is a separate survey with exactly matching items and value
-ranges. This removes the cross-version showif constructions and the hidden
-field set by JavaScript in the previous version.
+ranges.
 
 ## What the results page reports
 
@@ -98,8 +124,8 @@ config.json.
    and URLs are already set to `pid5fuerendanwender.rforms.org` and
    `pid5fortherapists.rforms.org`.
 3. **Item texts** are in `build/items/items_<version>_<lang>.tsv` (generated
-   from `pid-5_dt_englisch.xlsx`; columns item, text, plus a column with the
-   full-form item number or the position). The PID-5 and PID-5-SF use the item
+   columns item, text, plus a column with the full-form item number or the
+   position). The PID-5 and PID-5-SF use the item
    numbers of the 220-item form as item names (`pid5_<k>`); SF items are
    presented in the official SF order. BF and BF+M use positions 1 to 25 and
    1 to 36. The assignments were checked against the scale keys of the norming
@@ -110,7 +136,7 @@ config.json.
 5. **Publish the assets** (git push), then check that
    `<base_url>pid5_platform.R` and `<base_url>norms_full.csv` load in a browser.
 6. **Import into formr (rforms.org):** create a new run `pid5fuerendanwender`
-   (the existing run of the same name must be renamed or deleted first),
+   (an existing run of the same name must be renamed or deleted first),
    "Import" with `dist/pid5fuerendanwender.json`; likewise `pid5fortherapists`.
    Publish the runs, then click through all eight paths (four instruments by
    two input modes) and the reference-group variants.
@@ -144,29 +170,30 @@ re-import of the run. Texts of the results page (sections `results`,
 `<base_url>texts_<lang>.json`; updating the file in `assets/` is sufficient
 (the build script copies it automatically).
 
-## Changes relative to Version 2
+## Changes relative to Version 1
 
-Fixed:
-- Intervals: `T_int_lo`/`T_int_hi` instead of `T_lo`/`T_hi` (the old ones were about four times too narrow in the median).
-- Reference group: age without gender returned NA; gender without age silently used the norms of the 18 to 34 age group. Now an explicit choice with a defined fallback to the general population norms.
-- Coding 1 to 4: one point was subtracted instead of the number of answered items.
-- Range checks of the sum scores are now correct per instrument.
+Version 1 was the platform accompanying Rek, Kerber, Kemper, and Zimmermann
+(2021). Version 2 replaces its norms and its implementation.
 
-Removed:
-- Toggles "model-implied values" and "percentiles" (the percentile is now a table column; intervals are always shown).
-- Old norms (N = 1288, Tiefenbrunn comparison, common-metric text).
-- Hard-coded URLs on formr.org/rforms.org.
-- Fourfold duplicated code (about 6000 lines) in favor of one script.
-
-New:
-- PID5BF+M: entry and scoring at the domain level including Anankastia.
+Norms:
+- Population-representative norms for all four versions, conditional on age and
+  gender, from a probability-based sample (GESIS Panel, N = 4,727) instead of
+  the earlier quota-based basis.
+- Facets and total scores in addition to the domain scales, and the PID5BF+M
+  including anankastia.
+- Every printed value carries its uncertainty: a credible band for the norm
+  value and a 95% interval for the person's true score.
 - Extrapolation flag, flag for incomplete scales.
-- T-based profile display with intervals for domains and facets.
-- Interpretation notes following the manuscript (judge the interval; regression effect at extreme scores).
-- Two languages from one source; texts as a resource.
-- Norm files produced directly by the pipeline (stage X1, folder platform/).
-- Continuous-age norms as a third reference frame (T from the kernel tables, interval transferred from the age-band cell unless the pipeline supplies integrated intervals per year of age).
-- Total score (norm tables of 2026-09-05, 32,967 rows, including the tick fix of the directly observed PID5BF+M norms).
+- Three reference frames: general population, gender by age group, and gender
+  by year of age (continuous-age norms).
+
+Implementation:
+- One scoring script instead of fourfold duplicated code, loaded at runtime, so
+  corrections take effect without re-importing the runs.
+- Two languages generated from one source of texts.
+- Norm files produced directly by the norming pipeline (stage X1).
+- T-based profile display with intervals for domains and facets, and
+  interpretation notes following the manuscript.
 
 ## License and reuse
 
@@ -188,7 +215,7 @@ complete tables from the archive.
 
 **Item texts** (`assets/items_*.tsv`, and the questionnaire pages generated
 from them in `dist/*.json`): The items of the PID-5 are copyrighted by the
-American Psychiatric Association. They are included here solely for operating
+American Psychiatric Association (see the links under "The instruments"). They are included here solely for operating
 this scoring platform. Further use is governed by the terms of use of the
 American Psychiatric Association; the MIT License of this repository does not
 extend to them. The German translation is from Zimmermann, J., Altenstein, D.,
@@ -201,3 +228,24 @@ from two German-speaking samples. *Journal of Personality Disorders, 28*(4),
 Anyone who wants to use the norms programmatically without running this
 platform will find the complete tables in the Zenodo archive; an integration
 into the R package `hitop` (Girard, 2026) is planned.
+
+## References
+
+Girard, J. M. (2026). *hitop: Tools for the Hierarchical Taxonomy of
+Psychopathology* [R package].
+
+Krueger, R. F., Derringer, J., Markon, K. E., Watson, D., & Skodol, A. E.
+(2012). Initial construction of a maladaptive personality trait model and
+inventory for DSM-5. *Psychological Medicine, 42*(9), 1879–1890.
+<https://doi.org/10.1017/S0033291711002674>
+
+Rek, K., Kerber, A., Kemper, C. J., & Zimmermann, J. (2021). Getting the
+Personality Inventory for DSM-5 ready for clinical practice: Norms of the
+German PID5BF+ and model-based scores for four PID-5 versions.
+*Diagnostica, 67*(4), 202–213. <https://doi.org/10.1026/0012-1924/a000279>
+
+Zimmermann, J., Kerber, A., Kemper, C. J., & Rek, K. (2026). *Getting the
+Personality Inventory for DSM-5 ready for clinical practice:
+Population-representative norms that embrace uncertainty* [Manuscript under
+review]. Norm tables archived at <https://doi.org/10.5281/zenodo.22280403> and
+<https://osf.io/hwxnj>.
