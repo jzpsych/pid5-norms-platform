@@ -2,7 +2,7 @@
 
 A formr scoring platform for the Personality Inventory for DSM-5 and its
 abbreviated versions, based on the population-representative norm tables of
-Zimmermann, Kerber, Kemper, and Rek (2026). Two runs (German, English) are
+Zimmermann, Kerber, Kemper, and Weweck (2026). Two runs (German, English) are
 generated from a common template. All scoring logic lives in a single R script
 that the results pages load at runtime from a public URL.
 
@@ -182,7 +182,8 @@ re-import of the run. Texts of the results page (sections `results`,
 ## Changes relative to Version 1
 
 Version 1 was the platform accompanying Rek, Kerber, Kemper, and Zimmermann
-(2021). Version 2 replaces its norms and its implementation.
+(2021), the first version of the same preprint. Version 2 replaces its norms
+and its implementation.
 
 Norms:
 - Population-representative norms for all four versions, conditional on age and
@@ -214,7 +215,7 @@ MIT License, see `LICENSE`. Reuse, modification, and integration into other
 applications are welcome.
 
 **Norm tables** (`assets/norms_*.csv`): CC BY 4.0. They are an excerpt of the
-tables from Zimmermann, J., Kerber, A., Kemper, C. J., & Rek, K. (2026),
+tables from Zimmermann, Kerber, Kemper, and Weweck (2026),
 *Getting the Personality Inventory for DSM-5 ready for clinical practice:
 Population-representative norms that embrace uncertainty*, archived at
 <https://doi.org/10.5281/zenodo.22280403> and <https://osf.io/hwxnj>. Please
@@ -246,8 +247,8 @@ inventory for DSM-5. *Psychological Medicine, 42*(9), 1879–1890.
 
 Rek, K., Kerber, A., Kemper, C. J., & Zimmermann, J. (2021). *Getting the
 Personality Inventory for DSM-5 ready for clinical practice: Norm values and
-correlates in a representative sample from the German population* [Preprint].
-PsyArXiv. <https://doi.org/10.31234/osf.io/5hm43>
+correlates in a representative sample from the German population* (Version 1)
+[Preprint]. PsyArXiv. <https://doi.org/10.31234/osf.io/5hm43_v1>
 
 Zimmermann, J., Altenstein, D., Krieger, T., Grosse Holtforth, M., Pretsch, J.,
 Alexopoulos, J., Spitzer, C., Benecke, C., Krueger, R. F., Markon, K. E., &
@@ -256,8 +257,9 @@ maladaptive personality traits: Findings from two German-speaking samples.
 *Journal of Personality Disorders, 28*(4), 518–540.
 <https://doi.org/10.1521/pedi_2014_28_130>
 
-Zimmermann, J., Kerber, A., Kemper, C. J., & Rek, K. (2026). *Getting the
+Zimmermann, J., Kerber, A., Kemper, C. J., & Weweck, K. (2026). *Getting the
 Personality Inventory for DSM-5 ready for clinical practice:
-Population-representative norms that embrace uncertainty* [Manuscript under
-review]. Norm tables archived at <https://doi.org/10.5281/zenodo.22280403> and
-<https://osf.io/hwxnj>.
+Population-representative norms that embrace uncertainty* (Version 2)
+[Preprint]. PsyArXiv. <https://doi.org/10.31234/osf.io/5hm43_v2> (Version 1 is
+Rek et al., 2021). Norm tables, supplement, and analysis code archived at
+<https://doi.org/10.5281/zenodo.22280403> and <https://osf.io/hwxnj>.

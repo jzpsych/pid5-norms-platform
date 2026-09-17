@@ -29,14 +29,14 @@
 #   <base_url>/texts_<lang>.json
 #   <base_url>/items_<version>_<lang>.tsv  (item texts; optional)
 #
-# Reported quantities per scale (Zimmermann, Kerber, Kemper, & Rek, 2026):
+# Reported quantities per scale (Zimmermann, Kerber, Kemper, & Weweck, 2026):
 #   T          observed-score percentile T score (column "T")
 #   T_lo/T_hi  fully integrated 95% credible interval (columns T_int_lo/hi)
 #   pctl       median percentile estimate (column pctl_med)
 #   extrap     raw score outside the range observed in the reference sample
 # =============================================================================
 
-pf_version_tag <- "2026-09-06c"
+pf_version_tag <- "2026-09-14"
 
 # UTF-8 output (umlauts in cat()) also on hosts with a non-UTF-8 default locale
 if (!isTRUE(l10n_info()[["UTF-8"]])) {
